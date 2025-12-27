@@ -1,0 +1,52 @@
+<mujoco model="Simple Car Navigation">
+  <include file="../common.xml"/>
+  <include file="car_model.xml" />
+
+  <size memory="1M" nconmax="500"/>
+
+  <custom>
+    <!-- agent -->
+    <numeric name="agent_planner" data="1" />
+    <numeric name="agent_horizon" data="2.0" />
+    <numeric name="agent_timestep" data="0.02" />
+    <numeric name="sampling_sample_width" data="0.02" />
+    <numeric name="sampling_control_width" data="0.03" />
+    <numeric name="sampling_spline_points" data="10" />
+    <numeric name="sampling_exploration" data="0.5" />
+    <numeric name="gradient_spline_points" data="10" />
+    <numeric name="residual_Goal_Position_x" data="1.0 0.0 0.0 3.0" />
+    <numeric name="residual_Goal_Position_y" data="1.0 0.0 0.0 3.0" />
+
+    <!-- estimator -->
+    <numeric name="estimator" data="0" />
+  </custom>
+
+  <sensor>
+    <!-- cost - user sensors must be first and sequential -->
+    <user name="Goal_Position_x" dim="1" user="0 10.0 0 100.0"/>
+    <user name="Goal_Position_y" dim="1" user="0 10.0 0 100.0"/>
+    <user name="Control_Forward" dim="1" user="0 0.1 0.0 1.0"/>
+    <user name="Control_Turn" dim="1" user="0 0.1 0.0 1.0"/>
+
+    <!-- speed/velocity sensors -->
+    <framelinvel name="car_velocity" objtype="body" objname="car"/>
+    <frameangvel name="car_angular_velocity" objtype="body" objname="car"/>
+    
+    <!-- other sensors -->
+    <jointactuatorfrc name="right" joint="right"/>
+    <jointactuatorfrc name="left" joint="left"/>
+    
+    <!-- trace -->
+    <framepos name="trace0" objtype="body" objname="car"/>
+  </sensor>
+
+  <worldbody>
+    <body name="goal" mocap="true" pos="1 1 0.01">
+      <geom name="goal" type="sphere" size="0.08" rgba="1 0.3 0.3 0.6" contype="0" conaffinity="0"/>  <!-- 浅红/粉红目标点，呼应车身 -->
+    </body>
+  </worldbody>
+
+  <keyframe>
+    <key name="home" qpos="0 0 0 1 0 0 0 0 0" />
+  </keyframe>
+</mujoco>
